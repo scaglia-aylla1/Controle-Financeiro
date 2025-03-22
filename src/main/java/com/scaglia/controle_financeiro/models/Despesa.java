@@ -32,6 +32,11 @@ public class Despesa {
     private Boolean paga; // Indica se a despesa foi paga
     private LocalDate dataPagamento; // Data do pagamento
 
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private Categoria categoria;
+
+
 
 }
 

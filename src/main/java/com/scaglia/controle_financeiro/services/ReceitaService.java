@@ -25,7 +25,7 @@ public class ReceitaService {
     }
 
     @Transactional
-    public Receita salvar(Receita receita) {
+    public Receita salvarReceita(Receita receita) {
         return receitaRepository.save(receita);
     }
 
@@ -48,4 +48,6 @@ public class ReceitaService {
     public List<Receita> buscarPorPeriodo(Date inicio, Date fim) {
         return receitaRepository.findByDataBetween(inicio, fim);
     }
+
+
 }

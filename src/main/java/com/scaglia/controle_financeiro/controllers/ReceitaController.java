@@ -4,6 +4,7 @@ import com.scaglia.controle_financeiro.models.Receita;
 import com.scaglia.controle_financeiro.services.ReceitaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,14 +29,16 @@ public class ReceitaController {
     }
 
     @PostMapping
-    public ResponseEntity<Receita> salvar(@Valid @RequestBody Receita receita) {
-        return ResponseEntity.ok(receitaService.salvar(receita));
+    public ResponseEntity<Receita> criarReceita(@RequestBody Receita receita) {
+        Receita novaReceita = receitaService.salvarReceita(receita);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novaReceita);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Receita> atualizar(@PathVariable Long id, @Valid @RequestBody Receita receitaAtualizada) {
         return ResponseEntity.ok(receitaService.atualizar(id, receitaAtualizada));
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {

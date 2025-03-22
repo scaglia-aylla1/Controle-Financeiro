@@ -18,5 +18,7 @@ public class Categoria {
 
     @Column(nullable = false, unique = true)
     private String nome;
+
+    private String descricao;
 }
 
