@@ -6,7 +6,7 @@ O Sistema de Controle Financeiro Pessoal é uma aplicação que permite aos usu�
 ## Tecnologias Utilizadas
 - **Backend**: Java, Spring Boot, Hibernate, JPA, MySQL
 - **Frontend**: React, Bootstrap, Chart.js
-- **Outros**: Lombok, JWT para autenticação
+- **Outros**: Swagger UI
 
 ## Funcionalidades
 - Cadastro e autenticação de usuários.
