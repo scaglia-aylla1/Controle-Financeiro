@@ -2,6 +2,7 @@ package com.scaglia.controle_financeiro.controllers;
 
 import com.scaglia.controle_financeiro.models.RelatorioFinanceiro;
 import com.scaglia.controle_financeiro.services.RelatorioFinanceiroService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
+@Tag(name = "Relatórios", description = "Endpoints para gerar relatórios")
 @RestController
 @RequestMapping("/api/relatorios")
 @RequiredArgsConstructor

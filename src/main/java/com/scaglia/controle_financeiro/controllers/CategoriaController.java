@@ -2,13 +2,14 @@ package com.scaglia.controle_financeiro.controllers;
 
 import com.scaglia.controle_financeiro.models.Categoria;
 import com.scaglia.controle_financeiro.services.CategoriaService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@Tag(name = "Categorias", description = "Endpoints para criar categorias")
 @RestController
 @RequestMapping("/api/categorias")
 @RequiredArgsConstructor

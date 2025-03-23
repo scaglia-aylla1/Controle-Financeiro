@@ -2,6 +2,7 @@ package com.scaglia.controle_financeiro.controllers;
 
 import com.scaglia.controle_financeiro.models.Usuario;
 import com.scaglia.controle_financeiro.services.UsuarioService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
+@Tag(name = "Usuários", description = "Endpoints para cadastrar usuários")
 @RestController
 @RequestMapping("/api/usuarios")
 @RequiredArgsConstructor
