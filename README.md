@@ -34,45 +34,64 @@ Para configurar o projeto em seu ambiente local, siga as etapas abaixo:
 ```mermaid
 classDiagram
     class Usuario {
-        +String id
+        +Long id
         +String nome
         +String email
         +String senha
+        +cadastrar()
+        +atualizar()
+        +listar(): List<Usuario>
+        +deletar()
     }
 
     class Receita {
-        +String id
+        +Long id
         +String descricao
-        +Double valor
-        +Date data
+        +BigDecimal valor
+        +LocalDate data
+        +Usuario usuario
         +Categoria categoria
+        +listar(): List<Receita>
+        +cadastrar()
+        +atualizar()
+        +deletar()
     }
 
     class Despesa {
-        +String id
+        +Long id
         +String descricao
-        +Double valor
-        +Date data
+        +BigDecimal valor
+        +LocalDate data
+        +Usuario usuario
         +Categoria categoria
+        +listar(): List<Despesa>
+        +cadastrar()
+        +atualizar()
+        +deletar()
     }
 
     class Categoria {
-        +String id
+        +Long id
         +String nome
+        +listar(): List<Categoria>
+        +cadastrar()
+        +atualizar()
+        +deletar()
     }
 
-    class ControleFinanceiro {
-        +List<Receita> receitas
-        +List<Despesa> despesas
-        +List<Categoria> categorias
+    class RelatorioFinanceiro {
+        +LocalDate periodoInicio
+        +LocalDate periodoFim
+        +BigDecimal totalReceitas
+        +BigDecimal totalDespesas
+        +BigDecimal saldo
+        +gerar()
     }
 
-    Usuario --> ControleFinanceiro : "possui"
-    ControleFinanceiro --> Receita : "contém"
-    ControleFinanceiro --> Despesa : "contém"
-    ControleFinanceiro --> Categoria : "contém"
-    Receita --> Categoria : "pertence a"
-    Despesa --> Categoria : "pertence a"
+    Usuario "1" -- "0..*" Receita : possui
+    Usuario "1" -- "0..*" Despesa : possui
+    Receita "*" --> "1" Categoria : pertence a
+    Despesa "*" --> "1" Categoria : pertence a
 ```
 ## Como Contribuir:
 1. Faça um fork deste repositório.
