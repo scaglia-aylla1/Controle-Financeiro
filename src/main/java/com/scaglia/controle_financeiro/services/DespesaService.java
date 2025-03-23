@@ -1,65 +1,75 @@
 package com.scaglia.controle_financeiro.services;
 
+import com.scaglia.controle_financeiro.dto.DespesaDTO;
+import com.scaglia.controle_financeiro.models.Categoria;
 import com.scaglia.controle_financeiro.models.Despesa;
+import com.scaglia.controle_financeiro.models.Usuario;
+import com.scaglia.controle_financeiro.repositories.CategoriaRepository;
 import com.scaglia.controle_financeiro.repositories.DespesaRepository;
+import com.scaglia.controle_financeiro.repositories.UsuarioRepository;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class DespesaService {
 
-    @Autowired
-    private DespesaRepository despesaRepository;
+    private final DespesaRepository despesaRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final CategoriaRepository categoriaRepository;
 
-    public Despesa criarDespesa(Despesa despesa) {
+
+    @Transactional
+    public Despesa cadastrarDespesa(Despesa despesa, String emailUsuario) {
+        Usuario usuario = usuarioRepository.findByEmail(emailUsuario)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado para o e-mail: " + emailUsuario));
+
+        Categoria categoria = categoriaRepository.findById(despesa.getCategoria().getId())
+                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+
+        despesa.setUsuario(usuario);
+        despesa.setCategoria(categoria);
+
         return despesaRepository.save(despesa);
     }
 
-    public List<Despesa> listarDespesas() {
-        return despesaRepository.findAll();
+
+    public List<Despesa> listarDespesas(String emailUsuario) {
+        Optional<Usuario> usuario = usuarioRepository.findByEmail(emailUsuario);
+        return despesaRepository.findByUsuario(usuario.orElse(null));
     }
 
     public Optional<Despesa> buscarDespesaPorId(Long id) {
         return despesaRepository.findById(id);
     }
 
-    public List<Despesa> buscarDespesasPorPeriodo(LocalDate inicio, LocalDate fim) {
-        return despesaRepository.findByDataBetween(inicio, fim);
+    @Transactional
+    public Despesa atualizarDespesa(Long id, Despesa despesaAtualizada) {
+        return despesaRepository.findById(id)
+                .map(despesaExistente -> {
+                    despesaExistente.setDescricao(despesaAtualizada.getDescricao());
+                    despesaExistente.setValor(despesaAtualizada.getValor());
+                    despesaExistente.setData(despesaAtualizada.getData());
+                    return despesaRepository.save(despesaExistente);
+                })
+                .orElseThrow(() -> new RuntimeException("Despesa não encontrada"));
     }
 
-    public void deletarDespesa(Long id) {
+    @Transactional
+    public void excluirDespesa(Long id) {
         despesaRepository.deleteById(id);
     }
 
-    public Despesa editarDespesa(Long id, Despesa despesa) {
-        Optional<Despesa> despesaExistente = despesaRepository.findById(id);
-        if (despesaExistente.isPresent()) {
-            Despesa despesaAtualizada = despesaExistente.get();
-            despesaAtualizada.setDescricao(despesa.getDescricao());
-            despesaAtualizada.setValor(despesa.getValor());
-            despesaAtualizada.setData(despesa.getData());
-            return despesaRepository.save(despesaAtualizada);
-        }
-        return null;
+    public List<Despesa> buscarDespesasPorPeriodo(String emailUsuario, LocalDate dataInicio, LocalDate dataFim) {
+        Optional<Usuario> usuario = usuarioRepository.findByEmail(emailUsuario);
+        return despesaRepository.findByUsuarioAndDataBetween(usuario.orElse(null), dataInicio, dataFim);
     }
-
-    public void registrarPagamento(Long idDespesa) {
-        Despesa despesa = despesaRepository.findById(idDespesa)
-                .orElseThrow(() -> new RuntimeException("Despesa não encontrada"));
-
-        // Atualizar o status da despesa para paga
-        despesa.setPaga(true);
-        despesa.setDataPagamento(LocalDate.now());
-
-        // Salvar a despesa atualizada
-        despesaRepository.save(despesa);
-    }
-
-
 }
 

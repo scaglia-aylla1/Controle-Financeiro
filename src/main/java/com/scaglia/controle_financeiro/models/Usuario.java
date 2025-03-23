@@ -26,7 +26,7 @@ public class Usuario {
 
     @NotBlank(message = "Email é obrigatório")
     @Email(message = "Email deve ser válido")
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
     @NotBlank(message = "Senha é obrigatória")

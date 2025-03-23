@@ -19,6 +19,9 @@ public class Categoria {
     @Column(nullable = false, unique = true)
     private String nome;
 
-    private String descricao;
+    // Construtor que aceita apenas o ID
+    public Categoria(Long id) {
+        this.id = id;
+    }
 }
 

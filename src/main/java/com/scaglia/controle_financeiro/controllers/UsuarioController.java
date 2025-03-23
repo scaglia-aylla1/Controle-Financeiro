@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -38,14 +39,6 @@ public class UsuarioController {
         return usuarioService.buscarUsuarioPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/email/{email}")
-    public ResponseEntity<Usuario> buscarUsuarioPorEmail(@PathVariable String email) {
-        Usuario usuario = usuarioService.buscarUsuarioPorEmail(email);
-        return usuario != null
-                ? ResponseEntity.ok(usuario)
-                : ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")

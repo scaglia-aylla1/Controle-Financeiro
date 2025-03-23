@@ -29,12 +29,13 @@ public class Despesa {
     @NotNull(message = "A data da despesa é obrigatória.")
     private LocalDate data;
 
-    private Boolean paga; // Indica se a despesa foi paga
-    private LocalDate dataPagamento; // Data do pagamento
-
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 
 
 

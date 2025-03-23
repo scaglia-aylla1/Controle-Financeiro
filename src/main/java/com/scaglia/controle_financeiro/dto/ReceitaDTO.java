@@ -1,24 +1,19 @@
-package com.scaglia.controle_financeiro.models;
+package com.scaglia.controle_financeiro.dto;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Receita {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ReceitaDTO {
 
     @NotBlank(message = "A descrição não pode estar vazia")
     private String descricao;
@@ -30,11 +25,8 @@ public class Receita {
     @NotNull(message = "A data é obrigatória")
     private LocalDate data;
 
-    @ManyToOne
-    @JoinColumn(name = "categoria_id")
-    private Categoria categoria;
+    private Long categoriaId; // ID da categoria
 
-    @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario usuario;
+    @NotBlank(message = "O e-mail do usuário é obrigatório")
+    private String emailUsuario; // Agora o e-mail é passado na requisição
 }

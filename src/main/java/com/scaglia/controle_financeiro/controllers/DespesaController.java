@@ -1,68 +1,50 @@
 package com.scaglia.controle_financeiro.controllers;
 
-import com.scaglia.controle_financeiro.dto.PagamentoDTO;
+import com.scaglia.controle_financeiro.dto.DespesaDTO;
 import com.scaglia.controle_financeiro.models.Despesa;
 import com.scaglia.controle_financeiro.services.DespesaService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/despesas")
+@RequestMapping("/api/despesas")
+@RequiredArgsConstructor
 public class DespesaController {
 
-    @Autowired
-    private DespesaService despesaService;
+    private final DespesaService despesaService;
 
     @PostMapping
-    public ResponseEntity<Despesa> criarDespesa(@Valid @RequestBody Despesa despesa) {
-        return ResponseEntity.ok(despesaService.criarDespesa(despesa));
+    public ResponseEntity<Despesa> cadastrarDespesa(@Valid @RequestBody DespesaDTO despesaDTO) {
+        Despesa novaDespesa = despesaService.cadastrarDespesa(despesaDTO.toEntity(), despesaDTO.getEmailUsuario());
+        return ResponseEntity.ok(novaDespesa);
     }
-
     @GetMapping
     public ResponseEntity<List<Despesa>> listarDespesas() {
-        return ResponseEntity.ok(despesaService.listarDespesas());
+        List<Despesa> despesas = despesaService.listarDespesas("usuario_fixo@exemplo.com"); // Aqui também é a mesma abordagem
+        return ResponseEntity.ok(despesas);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Despesa> buscarDespesaPorId(@PathVariable Long id) {
-        Optional<Despesa> despesa = despesaService.buscarDespesaPorId(id);
-        return despesa.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/periodo")
-    public ResponseEntity<List<Despesa>> buscarDespesasPorPeriodo(
-            @RequestParam LocalDate inicio, @RequestParam LocalDate fim) {
-        return ResponseEntity.ok(despesaService.buscarDespesasPorPeriodo(inicio, fim));
+        return despesaService.buscarDespesaPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Despesa> editarDespesa(@PathVariable Long id, @RequestBody @Valid Despesa despesa) {
-        Despesa despesaAtualizada = despesaService.editarDespesa(id, despesa);
-        if (despesaAtualizada != null) {
-            return ResponseEntity.ok(despesaAtualizada);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Despesa> atualizarDespesa(
+            @PathVariable Long id, @Valid @RequestBody Despesa despesa) {
+        Despesa despesaAtualizada = despesaService.atualizarDespesa(id, despesa);
+        return ResponseEntity.ok(despesaAtualizada);
     }
-
-
-    @PostMapping("/registrar-pagamento")
-    public ResponseEntity<String> registrarPagamento(@RequestBody PagamentoDTO pagamentoDTO) {
-        despesaService.registrarPagamento(pagamentoDTO.getIdDespesa());
-        return ResponseEntity.ok("Pagamento registrado com sucesso");
-    }
-
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarDespesa(@PathVariable Long id) {
-        despesaService.deletarDespesa(id);
+    public ResponseEntity<Void> excluirDespesa(@PathVariable Long id) {
+        despesaService.excluirDespesa(id);
         return ResponseEntity.noContent().build();
     }
 }
-

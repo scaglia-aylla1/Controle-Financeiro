@@ -1,24 +1,21 @@
 package com.scaglia.controle_financeiro.services;
 
-import com.scaglia.controle_financeiro.exception.ResourceNotFoundException;
 import com.scaglia.controle_financeiro.models.Categoria;
 import com.scaglia.controle_financeiro.repositories.CategoriaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CategoriaService {
 
     private final CategoriaRepository categoriaRepository;
 
-    @Autowired
-    public CategoriaService(CategoriaRepository categoriaRepository) {
-        this.categoriaRepository = categoriaRepository;
-    }
-
-    public Categoria salvarCategoria(Categoria categoria) {
+    @Transactional
+    public Categoria cadastrarCategoria(Categoria categoria) {
         return categoriaRepository.save(categoria);
     }
 
@@ -26,15 +23,22 @@ public class CategoriaService {
         return categoriaRepository.findAll();
     }
 
-    public Categoria atualizarCategoria(Long id, Categoria categoria) {
-        if (categoriaRepository.existsById(id)) {
-            categoria.setId(id);
-            return categoriaRepository.save(categoria);
-        }
-        throw new ResourceNotFoundException("Categoria com ID " + id + " não encontrada.");
+    public Categoria buscarCategoriaPorId(Long id) {
+        return categoriaRepository.findById(id).orElse(null);
     }
 
-    public void deletarCategoria(Long id) {
+    @Transactional
+    public Categoria atualizarCategoria(Long id, Categoria categoriaAtualizada) {
+        return categoriaRepository.findById(id)
+                .map(categoriaExistente -> {
+                    categoriaExistente.setNome(categoriaAtualizada.getNome());
+                    return categoriaRepository.save(categoriaExistente);
+                })
+                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+    }
+
+    @Transactional
+    public void excluirCategoria(Long id) {
         categoriaRepository.deleteById(id);
     }
 }
